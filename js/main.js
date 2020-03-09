@@ -1,11 +1,8 @@
 'use strict';
 
-function TicTacToe() {
-	const self = this;
-
-	// инициализация игры
-	self.init = () => {
-		self._wins = [ // выигрышные комбинации
+class TicTacToe {
+	constructor() {
+		this._wins = [ // выигрышные комбинации
 			[0, 1, 2],
 			[3, 4, 5],
 			[6, 7, 8],
@@ -15,72 +12,73 @@ function TicTacToe() {
 			[0, 4, 8],
 			[2, 4, 6],
 		];
-		self._text = document.querySelector('.win-text'); // текст модального окна
-		self._modal = document.getElementById('modal');   // модальное окно
-		self._setMove = true;                             // кто ходит
-		self._movesCount = 0;                             // текущий номер хода
-		self._isVictory = false;                          // если true - победа
-		self._cells = document.querySelectorAll('.cell'); // псевдомассив клеток
-		self._cells.forEach(cell => cell.addEventListener('click', event => {
-			self._handleMove(event);
+
+		this._text = document.querySelector('.win-text'); // текст модального окна
+		this._modal = document.getElementById('modal');   // модальное окно
+		this._setMove = true;                             // кто ходит
+		this._movesCount = 0;                             // текущий номер хода
+		this._isVictory = false;                          // если true - победа
+		this._cells = document.querySelectorAll('.cell'); // псевдомассив клеток
+		this._cells.forEach(cell => cell.addEventListener('click', event => {
+			this._handleMove(event);
 		}));
-		document.querySelector('.game-restart').addEventListener('click', self._handleReset);
-		document.querySelector('.reset').addEventListener('click', self._removeModal);
+
+		document.querySelector('.game-restart').addEventListener('click', e => this._handleReset(e));
+		document.querySelector('.reset').addEventListener('click', e => this._removeModal(e));
 	}
-		  
+
 	// переход хода
-	self._handleMove = function (event) {
+	_handleMove(event) {
 		if (event.target.textContent == '') {
-		    event.target.textContent = self._setMove ? 'X' : '0';
-		    self._movesCount++;
-		    self._setMove = !self._setMove;
-		    self._handleWin();
+			event.target.textContent = this._setMove ? 'X' : '0';
+			this._movesCount++;
+			this._setMove = !this._setMove;
+			this._handleWin();
 		}
 	}
 
 	// проверка победы
-	self._handleWin = function () {
-		self._wins.forEach(win => {
-		    if (self._cells[win[0]].textContent == 'X' && self._cells[win[1]].textContent == 'X' && self._cells[win[2]].textContent == 'X') {
-		        self._isVictory = true;
-		        self._text.textContent = '🍾 Победили Х! 🍾';
-		        self._declareWinner();
-		    }
-		    if (self._cells[win[0]].textContent == '0' && self._cells[win[1]].textContent == '0' && self._cells[win[2]].textContent == '0') {
-		        self._isVictory = true;
-		        self._text.textContent = '🍾 Победили 0! 🍾';
-		        self._declareWinner();
-		    }
+	_handleWin() {
+		this._wins.forEach(win => {
+			if (this._cells[win[0]].textContent == 'X' && this._cells[win[1]].textContent == 'X' && this._cells[win[2]].textContent == 'X') {
+				this._isVictory = true;
+				this._text.textContent = '🍾 Победили Х! 🍾';
+				this._declareWinner();
+			}
+			if (this._cells[win[0]].textContent == '0' && this._cells[win[1]].textContent == '0' && this._cells[win[2]].textContent == '0') {
+				this._isVictory = true;
+				this._text.textContent = '🍾 Победили 0! 🍾';
+				this._declareWinner();
+			}
 		});
-		self._handleDraw();
+		this._handleDraw();
 	}
 
 	// сброс игры
-	self._handleReset = function () {
-		self._cells.forEach(cell => cell.textContent = '');
-		self._movesCount = 0;
-		self._isVictory = false;
+	_handleReset() {
+		this._cells.forEach(cell => cell.textContent = '');
+		this._movesCount = 0;
+		this._isVictory = false;
 	}
 
 	// проверка на ничью
-	self._handleDraw = function () {
-		if (!self._isVictory && self._movesCount == 9) {
-			self._text.textContent = '🍾 Ничья! 🍾';
-			self._declareWinner();
+	_handleDraw() {
+		if (!this._isVictory && this._movesCount == 9) {
+			this._text.textContent = '🍾 Ничья! 🍾';
+			this._declareWinner();
 		}
 	}
 
 	// показывает модальное окно
-	self._declareWinner = function () {
-		self._modal.classList.remove('hidden');
+	_declareWinner() {
+		this._modal.classList.remove('hidden');
 	}
 
 	// скрывает модальное окно, запускает обнуление игры
-	self._removeModal = function () {
-		self._modal.classList.add('hidden');
-		self._handleReset();
+	_removeModal() {
+		this._modal.classList.add('hidden');
+		this._handleReset();
 	}
 }
 
 const game = new TicTacToe;
-game.init();
